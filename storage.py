@@ -18,7 +18,7 @@ def load_data():
     except json.JSONDecodeError:
         # JSON损坏：先把坏文件改名备份，带时间戳
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        broken_name = f"text.json.broken_{timestamp}"
+        broken_name = f"{DATA_FILE}.broken_{timestamp}"
         os.rename(DATA_FILE, broken_name)
         # 新建正常空文件
         data = {"memo": []}
