@@ -1,16 +1,15 @@
-# 这是一个示例 Python 脚本。
+import todo
 
-# 按 Shift+F10 执行或将其替换为您的代码。
-# 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
-
-
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 Ctrl+F8 切换断点。
+def create_memo():
 
 
-# 按间距中的绿色按钮以运行脚本。
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    while True:
+        print("【todo-cli 菜单栏，请输入0-7数字来完成以下功能：】\n")
+        print("0.创建一个备忘录\n1.查看备忘录列表\n2.删除一个备忘录\n3.进入一个备忘录，查看其中的项目列表\n4.添加项目\n5.删除项目\n6.将项目设定为已完成\n7.一键清除已完成项目\n")
+        a=input("请输入数字：")
+        if a=="0":
+            create_memo()
 
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
+
