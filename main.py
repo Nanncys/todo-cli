@@ -13,13 +13,36 @@ def check_iso_time(time_str: str):
         return False, "时间格式错误，请按照示例格式输入"
 
 
- # 输出当前备忘录列表
+# 显示某个备忘录的项目列表
+def show_todo_list(memo_id):
+    todo_list = todo.get_todo_list(memo_id)
+    memo_name = todo.get_memo_name(memo_id)
+
+    # 备忘录不存在
+    if memo_name is None:
+        print("未找到ID，请重新输入\n")
+        return None
+
+    # 备忘录存在，但是待办为空
+    if len(todo_list) == 0:
+        print(f"备忘录【{memo_name}】项目列表为空，请先创建\n")
+        return []
+
+    # 备忘录存在，有待办，打印表格
+    print(f"备忘录【{memo_name}】项目列表：\n")
+    print("ID\t内容\t截止时间\t是否完成\n")
+    for t in todo_list:
+        print(f"{t['id']}\t{t['content']}\t{t['dead_time']}\t{t['done']}\n")
+    return todo_list
+
+
+# 输出当前备忘录列表
 def print_memo_list():
     memo_list=todo.get_memo_list()
     if memo_list:
         print("备忘录列表：\n")
         for memo in memo_list:
-            print(f"ID：{memo["id"]} 名称：{memo["name"]}\n")
+            print(f"ID：{memo['id']} 名称：{memo['name']}\n")
     else:
         print("备忘录列表为空，请先创建\n")
 
@@ -43,26 +66,22 @@ def ui_delete_memo():
         except ValueError:
             print("格式错误！请按格式输入数字id\n")
 
+
 def print_todo_list():
     while True:
         try:
             memo_id=int(input("请输入要查看的备忘录ID（数字）（输入-1退出删除操作）："))
             if memo_id==-1:
                 break
+            # 调用函数，拿到结果
+            res = show_todo_list(memo_id)
+            if res is None:
+                # 不存在，继续循环，重输ID
+                continue
             else:
-                todo_list=todo.get_todo_list(memo_id)
-                memo_name=todo.get_memo_name(memo_id)
-                if todo_list and memo_name:
-                    print(f"备忘录【{memo_name}】项目列表：\n")
-                    print("ID\t内容\t截止时间\t是否完成\n")
-                    for t in todo_list:
-                        print(f"{t["id"]}\t{t["content"]}\t{t["dead_time"]}\t{t["done"]}\n")
-                    break
-                elif memo_name and not todo_list:
-                     print(f"备忘录【{memo_name}】项目列表为空，请先创建\n")
-                     break
-                elif not memo_name:
-                     print("未找到ID，请重新输入\n")
+                # 空列表 / 有项目，直接结束本次查看
+                break
+
         except ValueError:
             print("格式错误！请按格式输入数字id\n")
 
@@ -96,18 +115,14 @@ def ui_delete_todo():
             if memo_id==-1:
                 break
             
-            todo_list=todo.get_todo_list(memo_id)
-            memo_name=todo.get_memo_name(memo_id)
-            if todo_list and memo_name:
-                print(f"备忘录【{memo_name}】项目列表：\n")
-                print("ID\t内容\t截止时间\t是否完成\n")
-                for t in todo_list:
-                    print(f"{t["id"]}\t{t["content"]}\t{t["dead_time"]}\t{t["done"]}\n")
-            elif memo_name and not todo_list:
-                print(f"备忘录【{memo_name}】项目列表为空，请先创建\n")
+            # 调用函数，拿到结果
+            res = show_todo_list(memo_id)
+            if res is None:
+                # 备忘录不存在，重新输入
+                continue
+            elif len(res) == 0:
+                # 备忘录存在，但无待办，结束
                 break
-            elif not memo_name:
-                print("未找到备忘录ID，请重新输入\n")
 
             todo_id=int(input("请输入要删除的项目ID（数字）（输入-1退出删除操作）："))
             if todo_id==-1:
@@ -128,18 +143,14 @@ def ui_set_done():
             if memo_id==-1:
                 break
             
-            todo_list=todo.get_todo_list(memo_id)
-            memo_name=todo.get_memo_name(memo_id)
-            if todo_list and memo_name:
-                print(f"备忘录【{memo_name}】项目列表：\n")
-                print("ID\t内容\t截止时间\t是否完成\n")
-                for t in todo_list:
-                    print(f"{t["id"]}\t{t["content"]}\t{t["dead_time"]}\t{t["done"]}\n")
-            elif memo_name and not todo_list:
-                print(f"备忘录【{memo_name}】项目列表为空，请先创建\n")
+            # 调用函数，拿到结果
+            res = show_todo_list(memo_id)
+            if res is None:
+                # 备忘录不存在，重新输入
+                continue
+            elif len(res) == 0:
+                # 备忘录存在，但无待办，结束
                 break
-            elif not memo_name:
-                print("未找到备忘录ID，请重新输入\n")
 
             todo_id=int(input("请输入要设定已完成项目的项目ID（数字）（输入-1退出操作）："))
             if todo_id==-1:
@@ -156,7 +167,7 @@ def ui_set_done():
 def ui_clean_done():
     while True:
         try:
-            memo_id=int(input("请输入要一键清除已完成项目的备忘录ID（数字）（输入-1退出添加操作）："))
+            memo_id=int(input("请输入要一键清除已完成项目的备忘录ID（数字）（输入-1退出清除操作）："))
             if memo_id==-1:
                 break
 
