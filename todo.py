@@ -7,16 +7,6 @@ def get_memo_list():
     memo_list=data["memo"] # 引用memo_list改data自动改
     return memo_list
 
-# # 输出当前备忘录列表
-# def print_memo_list():
-#     memo_list=get_memo_list()
-#     if memo_list:
-#         print("备忘录列表：\n")
-#         for memo in memo_list:
-#             print(f"ID：{memo["id"]} 名称：{memo["name"]}\n")
-#     else:
-#         print("备忘录列表为空，请先创建\n")
-
 # 增加一个备忘录
 def add_memo(name):
     data=storage.load_data()
@@ -49,6 +39,31 @@ def delete_memo(memo_id):
         return False
     storage.save_data(data)
     return True
+
+# 根据id获取备忘录名字
+def get_memo_name(target_id):
+    data=storage.load_data()
+    memo_list=data["memo"]
+    memo_name=None
+    for memo in memo_list:
+        if memo["id"]==target_id:
+            memo_name=memo["name"]
+            break
+    return memo_name
+    
+    
+
+# 进入一个备忘录，查看项目列表
+def get_todo_list(target_id):
+    data=storage.load_data()
+    memo_list=data["memo"]
+    target_include=None
+    for memo in memo_list:
+        # 找对应备忘录id包括的项目内容
+        if memo["id"]==target_id:
+            target_include=memo["include"]
+            break
+    return target_include
 
 # 在指定备忘录里面添加一个项目
 def add_todo(target_id,new_content,new_dead):
